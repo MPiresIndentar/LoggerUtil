@@ -1,0 +1,46 @@
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Appender para logs das classes específicas -->
+        <RollingFile name="OtherClassesFile" fileName="logs/other-classes.log" filePattern="logs/other-classes-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="IndentarFile" fileName="logs/indentar-classes.log" filePattern="logs/indentar-classes-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <!-- Rotação diária 
+                O arquivo indentar-classes.log será o arquivo ativo onde os logs são gravados enquanto o arquivo não é rotacionado.
+Quando o TimeBasedTriggeringPolicy dispara (ou quando o arquivo atinge o tamanho de 10MB, no caso do SizeBasedTriggeringPolicy), o Log4j criará um novo arquivo com a data no nome, como indentar-classes-2024-11-20.log.gz.
+Se a rotação por tempo não ocorrer como esperado, o arquivo de log continuará com o nome original indentar-classes.log até que a rotação seja acionada corretamente.
+                -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <!-- Rotação por tamanho de arquivo -->
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+        </RollingFile>
+
+
+        <!-- Appender para logs de console -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger para o pacote br.com.indentar, com logs direcionados para o arquivo e console -->
+        <Logger name="br.com.indentar" level="debug" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="IndentarFile" />
+        </Logger>
+
+
+        <!-- Logger raiz -->
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="OtherClassesFile" />
+        </Root>
+    </Loggers>
+</Configuration>
